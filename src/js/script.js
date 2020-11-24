@@ -59,12 +59,15 @@
       thisProduct.data = data;
 
       thisProduct.renderInMenu();
+      thisProduct.initAccordion();
+
       console.log('new Product:', thisProduct);
 
     }
+
+
     renderInMenu() {
       const thisProduct = this;
-
       /*Generate HTML based on template */
       const generatedHTML = templates.menuProduct(thisProduct.data);
       //console.log(generatedHTML);
@@ -77,8 +80,39 @@
 
     }
 
+    initAccordion(event) {
+      const thisProduct = this;
+
+      /* find the clickable trigger (the element that should react to clicking) */
+       const clickableTriggers = document.querySelector(thisProduct.element);
+      /* START: click event listener to trigger */
+         /* prevent default action for event */
+       event.preventDefault();
+         /* toggle active class on element of thisProduct */
+
+         /* find all active products */
+
+          /* START LOOP: for each active product */
+
+              /* START: if the active product isn't the element of thisProduct */
+
+                /* remove class active for the active product */
+
+             /* END: if the active product isn't the element of thisProduct */
+
+          /* END LOOP: for each active product */
+
+      /* END: click event listener to trigger */
+
+    }
+
   }
 
+  const buttonTest = document.getElementById('button-test');
+
+  buttonTest.addEventListener('click', function(){
+    console.log('clicked');
+  });
 
   const app = {
     initMenu: function () {
@@ -95,6 +129,8 @@
 
     initData: function () {
       const thisApp = this;
+
+      //skąd to sie bierze
       thisApp.data = dataSource;
     },
 
