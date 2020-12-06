@@ -77,49 +77,40 @@
       const menuContainer = document.querySelector(select.containerOf.menu);
       /* add element to menu */
       menuContainer.appendChild(thisProduct.element);
-
     }
 
-    initAccordion(event) {
+    initAccordion() {
       const thisProduct = this;
-
       /* find the clickable trigger (the element that should react to clicking) */
-       const clickableTriggers = document.querySelector(thisProduct.element);
+      // const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
       /* START: click event listener to trigger */
-         /* prevent default action for event */
-       event.preventDefault();
-         /* toggle active class on element of thisProduct */
-
-         /* find all active products */
-
-          /* START LOOP: for each active product */
-
-              /* START: if the active product isn't the element of thisProduct */
-
-                /* remove class active for the active product */
-
-             /* END: if the active product isn't the element of thisProduct */
-
+      thisProduct.element.addEventListener('click', function (event) {
+        /* prevent default action for event */
+        event.preventDefault();
+        /* toggle active class on element of thisProduct */
+        thisProduct.element.classList.toggle('active');
+        /* find all active products */
+        const activeProducts = document.querySelectorAll(select.all.menuProductsActive);
+        /* START LOOP: for each active product */
+        for (let activeProduct of activeProducts) {
+          /* START: if the active product isn't the element of thisProduct */
+          if (activeProduct != thisProduct.element) {
+            /* remove class active for the active product */
+            activeProduct.classList.remove('active');
+            /* END: if the active product isn't the element of thisProduct */
+          }
           /* END LOOP: for each active product */
-
-      /* END: click event listener to trigger */
-
+        }
+        /* END: click event listener to trigger */
+      });
     }
-
   }
-
-  const buttonTest = document.getElementById('button-test');
-
-  buttonTest.addEventListener('click', function(){
-    console.log('clicked');
-  });
 
   const app = {
     initMenu: function () {
       const thisApp = this;
       console.log('thisApp.data:', thisApp.data);
 
-      //!!!!wytlumaczenie tej petli!!!!!
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
       }
@@ -143,10 +134,8 @@
       console.log('templates:', templates);
       thisApp.initData();
       thisApp.initMenu();
-
     },
   };
-
 
   app.init();
 }
