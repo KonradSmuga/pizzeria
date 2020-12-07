@@ -61,6 +61,8 @@
       thisProduct.renderInMenu();
       thisProduct.getElements();
       thisProduct.initAccordion();
+      thisProduct.initOrderForm();
+      thisProduct.processOrder();
       console.log('new Product:', thisProduct);
     }
 
@@ -78,19 +80,19 @@
       menuContainer.appendChild(thisProduct.element);
     }
 
-    getElements(){
+    //wytlumaczenie
+    getElements() {
       const thisProduct = this;
-    
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
-      console.log(thisProduct.accordionTrigger);
+      // console.log(thisProduct.accordionTrigger);
       thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
-      console.log(thisProduct.form);
+      // console.log(thisProduct.form);
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
-      console.log( thisProduct.formInput);
+      // console.log( thisProduct.formInput);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
-      console.log(  thisProduct.cartButton);
+      // console.log(  thisProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
-      console.log( thisProduct.priceElem);
+      console.log('price', thisProduct.priceElem);
     }
 
     initAccordion() {
@@ -98,7 +100,7 @@
       /* find the clickable trigger (the element that should react to clicking) */
       // const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
       /* START: click event listener to trigger */
-      thisProduct.element.addEventListener('click', function (event) {
+      thisProduct.accordionTrigger.addEventListener('click', function (event) {
         /* prevent default action for event */
         event.preventDefault();
         /* toggle active class on element of thisProduct */
@@ -118,13 +120,72 @@
         /* END: click event listener to trigger */
       });
     }
+
+    initOrderForm() {
+      const thisProduct = this;
+      // console.log('processOrder');
+
+      thisProduct.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+
+      for (let input of thisProduct.formInputs) {
+        input.addEventListener('change', function () {
+          thisProduct.processOrder();
+        });
+      }
+
+      thisProduct.cartButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+
+    }
+
+    processOrder() {
+      const thisProduct = this;
+      // console.log('initOrderForm');
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      // console.log('formData', formData);
+
+      let price = thisProduct.data.price;
+      console.log(price);
+
+      /* START LOOP: for each paramId in thisProduct.data.params */
+
+      for (let paramId in thisProduct.data.params) {
+        console.log('costam', thisProduct.data.params);
+        /* save the element in thisProduct.data.params with key paramId as const param */
+        const param = thisProduct.data.params[paramId];
+        // console.log('param', param.options);
+        /* START LOOP: for each optionId in param.options */
+        for (let optionId in param.options) {
+          // ????
+          const option = param.options[optionId];
+          console.log('option', option);
+          // console.log('paramId', paramId);
+          const optionSelected = formData.hasOwnProperty(paramId) && formData[paramId].indexOf(optionId) > -1;
+
+          if (!optionId.default && optionSelected) {
+            price += option.price;
+
+          } else if (optionId.default && !optionSelected) {
+            price -= option.price;
+          }
+        }
+        thisProduct.priceElem.innerHTML = price;
+      }
+    }
   }
+
+
 
   const app = {
     initMenu: function () {
       const thisApp = this;
       console.log('thisApp.data:', thisApp.data);
-
+      //?????
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
       }
