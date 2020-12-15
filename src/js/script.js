@@ -62,8 +62,9 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.initAmountWidget();
       thisProduct.processOrder();
-      console.log('new Product:', thisProduct);
+      // console.log('new Product:', thisProduct);
     }
 
 
@@ -80,9 +81,13 @@
       menuContainer.appendChild(thisProduct.element);
     }
 
-    //wytlumaczenie
     getElements() {
       const thisProduct = this;
+      // const thisWidget = this;
+      // thisWidget.element = element;
+      // thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      // thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      // thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
       // console.log(thisProduct.accordionTrigger);
       thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
@@ -92,10 +97,15 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       // console.log(  thisProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
-      console.log('price', thisProduct.priceElem);
+      // console.log('price', thisProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
-      console.log('thisProduct.imageWrapper', thisProduct.imageWrapper);
+      // console.log('thisProduct.imageWrapper', thisProduct.imageWrapper);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
+    // getElements(element){
+
+
+    // }
 
     initAccordion() {
       const thisProduct = this;
@@ -120,6 +130,15 @@
           /* END LOOP: for each active product */
         }
         /* END: click event listener to trigger */
+      });
+    }
+
+    initAmountWidget(){
+      const thisProduct = this;
+      thisProduct.initAmountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+
+      thisProduct.amountWidgetElem.addEventListener('announce', function(){
+        thisProduct.processOrder();
       });
     }
 
@@ -152,12 +171,12 @@
       // console.log('formData', formData);
 
       let price = thisProduct.data.price;
-      console.log(price);
+      // console.log(price);
 
       /* START LOOP: for each paramId in thisProduct.data.params */
 
       for (let paramId in thisProduct.data.params) {
-        console.log('costam', thisProduct.data.params);
+        // console.log('costam', thisProduct.data.params);
         /* save the element in thisProduct.data.params with key paramId as const param */
 
         const param = thisProduct.data.params[paramId];
@@ -165,7 +184,7 @@
         /* START LOOP: for each optionId in param.options */
         for (let optionId in param.options) {
           const option = param.options[optionId];
-          console.log('option', option);
+          // console.log('option', option);
           // console.log('paramId', paramId);
           const optionSelected = formData.hasOwnProperty(paramId) && formData[paramId].indexOf(optionId) > -1;
 
@@ -176,6 +195,7 @@
           } else if (optionId.default && !optionSelected) {
             price -= option.price;
           }
+
           const activeImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
           if (optionSelected && activeImage) {
 
@@ -186,18 +206,75 @@
           }
         }
       }
+      /*multiply price by ammount */
+      price *= thisProduct.amountWidget.value;
       thisProduct.priceElem.innerHTML = price;
     }
   }
 
+  class AmountWidget {
+    constructor(element) {
+      const thisWidget = this;
+      
+      thisWidget.getElements(element);
+      thisWidget.setValue(thisWidget.input.value);
+      console.log('amountWidget', thisWidget);
+      console.log('constructor arguments:', element);
+    }
 
+
+    /// czemu element jako argument?? 
+    getElements(element){
+      const thisWidget = this;
+    
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+    setValue(value){
+      const thisWidget = this;
+      const newValue = parseInt(value);
+      /*TODO add validation */
+
+      thisWidget.value = newValue;
+      this.annouce();
+      thisWidget.input.value = thisWidget.value;
+    }
+
+    initActions(){
+      const thisWidget = this;
+
+      thisWidget.input.addEventListener('change', function(){
+        thisWidget.setValue(thisWidget.input.value);
+      });
+
+      thisWidget.linkDecrease.addEventListener('click', function(event){
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value -1);
+
+        
+      });
+
+      thisWidget.linkIncrease.addEventListener('click', function(event){
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value +1);
+      });
+    }
+
+    annouce(){
+      const thisWidget = this;
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
+    }
+  }
 
 
   const app = {
     initMenu: function () {
       const thisApp = this;
       console.log('thisApp.data:', thisApp.data);
-      //?????
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
       }
@@ -207,8 +284,6 @@
 
     initData: function () {
       const thisApp = this;
-
-      //skąd to sie bierze
       thisApp.data = dataSource;
     },
 
