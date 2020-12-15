@@ -44,7 +44,7 @@
     amountWidget: {
       defaultValue: 1,
       defaultMin: 1,
-      defaultMax: 9,
+      defaultMax: 20,
     }
   };
 
@@ -131,7 +131,7 @@
 
     initAmountWidget(){
       const thisProduct = this;
-      thisProduct.initAmountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
 
       thisProduct.amountWidgetElem.addEventListener('updated', function(){
         thisProduct.processOrder();
@@ -236,7 +236,10 @@
       const newValue = parseInt(value);
       /*TODO add validation */
 
-      thisWidget.value = newValue;
+      if(newValue != thisWidget.value && newValue >=settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax){
+        thisWidget.value = newValue;
+      }
+     
       this.annouce();
       thisWidget.input.value = thisWidget.value;
 
