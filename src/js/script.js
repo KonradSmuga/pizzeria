@@ -239,33 +239,37 @@
           } else if (optionId.default && !optionSelected) {
             price -= option.price;
           }
-
-          const activeImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
-          if (optionSelected && activeImage) {
+          
+          const activeImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
+          if (optionSelected) {
             if (!thisProduct.params[paramId]) {
               thisProduct.params[paramId] = {
                 label: param.label,
                 options: {},
-
               };
             }
             thisProduct.params[paramId].options[optionId] = option.label;
-            activeImage.classList.add(classNames.menuProduct.imageVisible);
-          } else if (activeImage) {
 
-            activeImage.classList.remove(classNames.menuProduct.imageVisible);
+            for (let image of activeImages) {
+              image.classList.add(classNames.menuProduct.imageVisible);
+            }
+          } else if (activeImages) {
+            for (let image of activeImages) {
+              image.classList.remove(classNames.menuProduct.imageVisible);
+            }
+
           }
         }
-      }
-      /*multiply price by ammount */
-      thisProduct.priceSingle = price;
-      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
-      /* set the contents of thisProduct.priceElem to be the value of variable price */
-      thisProduct.priceElem.innerHTML = thisProduct.price;
-    
-      console.log('products params', thisProduct.params);
-    }
+        /*multiply price by ammount */
+        thisProduct.priceSingle = price;
+        thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
+        /* set the contents of thisProduct.priceElem to be the value of variable price */
+        thisProduct.priceElem.innerHTML = thisProduct.price;
 
+        console.log('products params', thisProduct.params);
+      }
+
+    }
   }
 
 
@@ -355,7 +359,6 @@
       const thisCart = this;
       thisCart.dom.toggleTrigger.addEventListener('click', function (event) {
         event.preventDefault();
-        //wcześniej używałem razem z element, natomiast po usunięciu element działa prawidłowo
         // thisCart.dom.wrapper.element.classList.toggle(classNames.cart.wrapperActive);
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
