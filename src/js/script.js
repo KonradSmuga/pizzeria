@@ -98,6 +98,7 @@
       thisProduct.initOrderForm();
       thisProduct.initAmountWidget();
       thisProduct.processOrder();
+
       // console.log('new Product:', thisProduct);
     }
 
@@ -190,9 +191,20 @@
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
 
     }
+
+
+    addToCart() {
+      const thisProduct = this;
+      thisProduct.name = thisProduct.data.name;
+      thisProduct.amount = thisProduct.amountWidget.value;
+      ///? skąd???
+      app.cart.add(thisProduct);
+    }
+
 
     processOrder() {
       const thisProduct = this;
@@ -200,6 +212,8 @@
       const formData = utils.serializeFormToObject(thisProduct.form);
       // console.log('formData', formData);
 
+      thisProduct.params = {};
+      /* set variable price to equal thisProduct.data.price */
       let price = thisProduct.data.price;
       // console.log(price);
 
@@ -228,7 +242,14 @@
 
           const activeImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
           if (optionSelected && activeImage) {
+            if (!thisProduct.params[paramId]) {
+              thisProduct.params[paramId] = {
+                label: param.label,
+                options: {},
 
+              };
+            }
+            thisProduct.params[paramId].options[optionId] = option.label;
             activeImage.classList.add(classNames.menuProduct.imageVisible);
           } else if (activeImage) {
 
@@ -237,10 +258,16 @@
         }
       }
       /*multiply price by ammount */
-      price *= thisProduct.amountWidget.value;
-      thisProduct.priceElem.innerHTML = price;
+      thisProduct.priceSingle = price;
+      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
+      /* set the contents of thisProduct.priceElem to be the value of variable price */
+      thisProduct.priceElem.innerHTML = thisProduct.price;
+    
+      console.log('products params', thisProduct.params);
     }
+
   }
+
 
   class AmountWidget {
     constructor(element) {
@@ -313,9 +340,8 @@
       thisCart.getElements(element);
       thisCart.initActions();
       console.log('new Cart', thisCart);
-
-
     }
+
     getElements(element) {
       const thisCart = this;
       thisCart.dom = {};
@@ -323,15 +349,21 @@
 
       //brak element czemu
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
-     
+
     }
     initActions() {
       const thisCart = this;
-      thisCart.dom.toggleTrigger.addEventListener('click', function(event){
+      thisCart.dom.toggleTrigger.addEventListener('click', function (event) {
         event.preventDefault();
+        //wcześniej używałem razem z element, natomiast po usunięciu element działa prawidłowo
         // thisCart.dom.wrapper.element.classList.toggle(classNames.cart.wrapperActive);
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+    }
+    add(menuProduct) {
+      //const thisCart = this;
+
+      console.log('adding product', menuProduct);
     }
 
   }
@@ -353,14 +385,14 @@
       thisApp.data = dataSource;
     },
 
-  
+
     initCart: function () {
       const thisApp = this;
 
       const cartElem = document.querySelector(select.containerOf.cart);
       thisApp.cart = new Cart(cartElem);
     },
-    
+
     init: function () {
       const thisApp = this;
       console.log('*** App starting ***');
