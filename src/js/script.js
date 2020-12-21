@@ -239,7 +239,7 @@
           } else if (optionId.default && !optionSelected) {
             price -= option.price;
           }
-          
+
           const activeImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
           if (optionSelected) {
             if (!thisProduct.params[paramId]) {
@@ -350,9 +350,8 @@
       const thisCart = this;
       thisCart.dom = {};
       thisCart.dom.wrapper = element;
-
-      //brak element czemu
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
 
     }
     initActions() {
@@ -364,10 +363,16 @@
       });
     }
     add(menuProduct) {
-      //const thisCart = this;
+      const thisCart = this;
+      /*Generate HTML based on template */
+      const generatedHTML = templates.cartProduct(menuProduct);
+      /* create element using utils.createElementFromHTML */
+      const generatedDom = utils.createDOMFromHTML(generatedHTML);
+      /* find menu container */
+      thisCart.dom.productList.appendChild(generatedDom);
 
-      console.log('adding product', menuProduct);
     }
+
 
   }
 
