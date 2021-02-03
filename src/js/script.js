@@ -365,9 +365,11 @@
         event.preventDefault();
         // thisCart.dom.wrapper.element.classList.toggle(classNames.cart.wrapperActive);
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
-        thisCart.dom.productList.addEventListener('updated', function(){
-          thisCart.update();
-        });
+       
+      }
+      );
+      thisCart.dom.productList.addEventListener('updated', function(){
+        thisCart.update();
       });
     }
 
