@@ -352,7 +352,11 @@
     getElements(element) {
       const thisCart = this;
       thisCart.dom = {};
+     
       thisCart.dom.wrapper = element;
+      thisCart.dom.phoneNumber = thisCart.dom.wrapper.querySelector(select.cart.phone)
+      thisCart.dom.adress = thisCart.dom.wrapper.querySelector(select.cart.adress)
+      thisCart.dom.form = thisCart.dom.wrapper.querySelector(select.cart.form);
       thisCart.dom.deliveryFee = thisCart.dom.wrapper.querySelector(select.cart.deliveryFee);
       thisCart.dom.totalPrice = thisCart.dom.wrapper.querySelector(select.cart.totalPrice);
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
@@ -380,7 +384,48 @@
         thisCart.remove(event.detail.cartProduct);
       });
 
+
+      thisCart.dom.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisCart.sendOrder();
+      });
+
     }
+    sendOrder() {
+      const thisCart = this;
+      const url = settings.db.url + '/' + settings.db.order;
+
+      const payload = {
+        address: thisCart.dom.adress,
+        phoneNumber: thisCart.dom.phoneNumber,
+        totalNumber: thisCart.totalNumber,
+        subtotalPrice: thisCart.subtotalPrice,
+        totalPrice: thisCart.totalPrice,
+        deliveryFee: thisCart.dom.deliveryFee,
+        totalPrice: thisCart.totalPrice,
+        products: [],
+        
+      };
+      for(let product in thisCart.products){
+        product.getData();
+      }
+      
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      };
+      fetch(url, options)
+      .then(function(response){
+        return response.json();
+      }).then(function(parsedResponse){
+        console.log('parsedResponse', parsedResponse);
+      });
+      }
+    
 
     add(menuProduct) {
       const thisCart = this;
@@ -461,6 +506,14 @@
       thisCartProduct.dom.edit = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.edit);
       thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove);
     }
+
+    // getData(){
+    //     const id = 
+    //     const amount = 
+    //     const price =
+    //     const priceSingle =
+    //     const params = 
+    // }
 
     initAmountWidget() {
       const thisCartProduct = this;
