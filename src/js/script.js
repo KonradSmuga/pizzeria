@@ -352,10 +352,10 @@
     getElements(element) {
       const thisCart = this;
       thisCart.dom = {};
-     
+
       thisCart.dom.wrapper = element;
-      thisCart.dom.phoneNumber = thisCart.dom.wrapper.querySelector(select.cart.phone)
-      thisCart.dom.adress = thisCart.dom.wrapper.querySelector(select.cart.adress)
+      thisCart.dom.phoneNumber = thisCart.dom.wrapper.querySelector(select.cart.phone);
+      thisCart.dom.adress = thisCart.dom.wrapper.querySelector(select.cart.adress);
       thisCart.dom.form = thisCart.dom.wrapper.querySelector(select.cart.form);
       thisCart.dom.deliveryFee = thisCart.dom.wrapper.querySelector(select.cart.deliveryFee);
       thisCart.dom.totalPrice = thisCart.dom.wrapper.querySelector(select.cart.totalPrice);
@@ -402,14 +402,13 @@
         subtotalPrice: thisCart.subtotalPrice,
         totalPrice: thisCart.totalPrice,
         deliveryFee: thisCart.dom.deliveryFee,
-        totalPrice: thisCart.totalPrice,
         products: [],
-        
+
       };
-      for(let product in thisCart.products){
-        product.getData();
+      for (let product in thisCart.products) {
+        payload.products.push(product.getData());
       }
-      
+
 
       const options = {
         method: 'POST',
@@ -419,13 +418,13 @@
         body: JSON.stringify(payload),
       };
       fetch(url, options)
-      .then(function(response){
-        return response.json();
-      }).then(function(parsedResponse){
-        console.log('parsedResponse', parsedResponse);
-      });
-      }
-    
+        .then(function (response) {
+          return response.json();
+        }).then(function (parsedResponse) {
+          console.log('parsedResponse', parsedResponse);
+        });
+    }
+
 
     add(menuProduct) {
       const thisCart = this;
@@ -507,13 +506,18 @@
       thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove);
     }
 
-    // getData(){
-    //     const id = 
-    //     const amount = 
-    //     const price =
-    //     const priceSingle =
-    //     const params = 
-    // }
+    getData() {
+      const thisCartProduct = this;
+      const product = {
+        id: thisCartProduct.id,
+        name: thisCartProduct.name,
+        amount: thisCartProduct.amount,
+        price: thisCartProduct.price,
+        priceSinge: thisCartProduct.priceSingle,
+        params: thisCartProduct.params,
+      };
+      return product;
+    }
 
     initAmountWidget() {
       const thisCartProduct = this;
