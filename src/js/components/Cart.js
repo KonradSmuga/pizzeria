@@ -72,7 +72,7 @@ export class Cart {
       products: [],
 
     };
-    for (let product in thisCart.products) {
+    for (let product of thisCart.products) {
       payload.products.push(product.getData());
     }
 
