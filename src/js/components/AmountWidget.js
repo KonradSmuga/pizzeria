@@ -1,7 +1,7 @@
 import {
   settings,
   select
-} from './settings.js';
+} from '../settings.js';
 
 export class AmountWidget {
   constructor(element) {
